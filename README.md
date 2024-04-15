@@ -133,3 +133,62 @@ public class WebApplicationServer {
 }
 ```
 ![img.png](docs/resources/build_artifact_location_configuration.png)
+
+#### Step2. 모든 웹 요청을 수신하여 적절한 Controller로 위임하는 FrontController 구현
+##### Step2 구현내용.
+- FrontController를 Tomcat이 실행할 수 있는 servlet으로 만들기 위해 HttpServlet을 상속
+- 모든 경로의 요청을 수신 할 수 있도록 @WebAdapter를 명시하고, 수신 경로를 "/"로 지정
+- FrontController로 부터 위임 받은 요청을 처리하기 위한 Controller interface 구현
+
+```java
+public interface Controller {
+    String handleRequest(HttpServletRequest request, HttpServletResponse response);
+}
+```
+- DispatcherServlet이 수신한 요청을 적절한 컨트롤러로 위임하기 위해 요청 URL Path 정보와 위임할 Controller 정보를 가지고 있는 RequestHandlerMapping 구현
+
+```java
+public class RequestHandlerMapping {
+    private Map<String, Controller> mappings = new HashMap<>();
+
+    void init() {
+        mappings.put("/", new HomeController());
+    }
+
+    public Controller findHandler(String urlPath) {
+        return mappings.get(urlPath);
+    }
+}
+```
+
+- 모든 웹 요청을 수신한 DispatcherServlet은 RequestHandlerMapping으로 부터 해당 요청을 처리할 적절한 Handler 선별 작업을 위임하여 RequestHandlerMapping으로 부터 조회된 Handler를 반환 받는다.
+- 이후 DispatcherServlet은 반환 받은 Handler(Controller)를 호출하며 호출된 Controller는 요청 처리 후 DispatcherServlet에게 forwarding할 view-name을 반환한다.
+- DispatcherServlet은 ViewResolver에게 view-name을 전달하여 랜더링할 view객체를 생성 후 forwarding한다.
+```java
+@WebServlet("/")
+public class DispatcherServlet extends HttpServlet {
+    private static final Logger log = LoggerFactory.getLogger(DispatcherServlet.class);
+    private RequestHandlerMapping requestHandlerMapping;
+
+    @Override
+    public void init() {
+        requestHandlerMapping = new RequestHandlerMapping();
+        requestHandlerMapping.init();
+    }
+
+    @Override
+    protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Controller handler = requestHandlerMapping.findHandler(request.getRequestURI());
+        try {
+            String viewName = handler.handleRequest(request, response);
+            log.info("[DispatcherServlet][service] Request url: {}, forward view name: {}", request.getRequestURI(), viewName);
+
+            RequestDispatcher requestDispatcher = request.getRequestDispatcher(viewName);
+            requestDispatcher.forward(request, response);
+        } catch (Exception e) {
+            log.error("[DispatcherServlet][service] Request url: {}", request.getRequestURI());
+        }
+    }
+}
+```
+---
