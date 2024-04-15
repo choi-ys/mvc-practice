@@ -82,3 +82,54 @@ forward(request, response);
 - 서블릿이 클라이언트(웹 브라우저)를 거쳐 다른 서블릿(또는 JSP)에게 요청하는 방식
 - Redirect 방식은 클라이언트로 부터 새로운 요청이기 때문에 새로운 HttpServletRequest, HttpServletResponse 객체가 생성됨
 - HttpServletResponse 객체의 sndRedirect() 이용
+
+## FrontController Pattern 실습
+### 실습 단계
+- Step0. FrontController 실습을 위한 프로젝트 생성 및 필요 의존성 설정
+- Step1. FrontController가 구현된 Application 구동을 위해 Entry Point 작성 및 Embedded Tomcat 설정
+- Step2. 모든 웹 요청을 수신하여 적절한 Controller로 위임하는 FrontController 구현
+
+#### Step0. FrontController 실습을 위한 프로젝트 생성 및 필요 의존성 설정
+##### Step0 구현 내용
+- Language: Java 8
+- Build Tool: Gradle
+- Dependencies
+```groovy
+dependencies {
+    implementation("javax.servlet:javax.servlet-api:4.0.1")
+    implementation("javax.servlet:jstl:1.2")
+
+    implementation("org.apache.tomcat.embed:tomcat-embed-core:8.5.42")
+    implementation("org.apache.tomcat.embed:tomcat-embed-jasper:8.5.42")
+
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.1")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
+    testImplementation("org.assertj:assertj-core:3.25.3")
+}
+```
+
+#### Step1. FrontController가 구현된 Application 구동을 위해 Entry Point 작성 및 Embedded Tomcat 설정
+##### Step1. 구현 내용
+- Custom Web Application 구동을 위한 Tomcat 설정
+    - Tomcat은 /webapps/WEB-INF 경로에 있는 build된 servlet을 실행하므로, Project 실행 시 build actifact(servelt) 생성 경로를 /webapps/WEB-INF로 변경
+```java
+public class WebApplicationServer {
+    private static final Logger log = LoggerFactory.getLogger(WebApplicationServer.class);
+
+    private static final String ROOT_LOCATION = "webapps";
+    private static final int TOMCAT_PORT = 8080;
+
+    public static void main(String[] args) throws LifecycleException {
+        Tomcat tomcat = new Tomcat();
+        tomcat.setPort(TOMCAT_PORT);
+
+        String rootLocationAbsolutePath = new File(ROOT_LOCATION).getAbsolutePath();
+        tomcat.addWebapp("/", rootLocationAbsolutePath);
+
+        tomcat.start();
+        log.info("Tomcat started on port(s): {}, configuring app with basedir: {}", TOMCAT_PORT, rootLocationAbsolutePath);
+        tomcat.getServer().await();
+    }
+}
+```
+![img.png](docs/resources/build_artifact_location_configuration.png)
