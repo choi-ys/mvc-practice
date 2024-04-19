@@ -1,14 +1,13 @@
-package io.example;
+package io.example.reflection;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import io.example.refecltion.annotation.Controller;
-import io.example.refecltion.service.Service;
+import io.example.annotation.Controller;
+import io.example.annotation.Service;
 import io.example.refecltion.controller.HealthCheckController;
-import io.example.frontcontroller.mvc.controller.HomeController;
-import io.example.refecltion.controller.SampleService;
+import io.example.refecltion.service.SampleService;
 import io.example.refecltion.model.User;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
@@ -36,7 +35,6 @@ public class ReflectionTest {
         // Then
         assertThat(beans).containsAll(
             Set.of(
-                HomeController.class,
                 HealthCheckController.class,
                 SampleService.class
             )

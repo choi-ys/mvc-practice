@@ -1,6 +1,6 @@
-package io.example.frontcontroller.mvc;
+package io.example.customframework.mvc;
 
-import io.example.frontcontroller.mvc.controller.Controller;
+import io.example.customframework.business.controller.Controller;
 import java.io.IOException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;

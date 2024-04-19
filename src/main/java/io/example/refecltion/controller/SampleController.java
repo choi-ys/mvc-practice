@@ -1,8 +1,8 @@
 package io.example.refecltion.controller;
 
-import io.example.refecltion.annotation.Controller;
-import io.example.refecltion.annotation.RequestMapping;
-import io.example.refecltion.annotation.RequestMethod;
+import io.example.annotation.Controller;
+import io.example.annotation.RequestMapping;
+import io.example.annotation.RequestMethod;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 

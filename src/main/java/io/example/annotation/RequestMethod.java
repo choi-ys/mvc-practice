@@ -1,4 +1,4 @@
-package io.example.refecltion.annotation;
+package io.example.annotation;
 
 public enum RequestMethod {
     GET, POST, PATCH, PUT, DELETE

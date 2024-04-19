@@ -1,7 +1,7 @@
-package io.example.frontcontroller.mvc;
+package io.example.customframework.mvc;
 
-import io.example.frontcontroller.mvc.controller.Controller;
-import io.example.frontcontroller.mvc.controller.HomeController;
+import io.example.customframework.business.controller.Controller;
+import io.example.customframework.business.controller.HomeController;
 import java.util.HashMap;
 import java.util.Map;
 
