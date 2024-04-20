@@ -1,8 +1,8 @@
-package io.example.customframework.mvc;
+package io.example.customframework.mvc.handlermappings;
 
 import static io.example.annotation.RequestMethod.GET;
 import static io.example.annotation.RequestMethod.POST;
-import static io.example.customframework.mvc.HandlerKey.of;
+import static io.example.customframework.mvc.handlermappings.HandlerKey.of;
 
 import io.example.customframework.business.controller.Controller;
 import io.example.customframework.business.controller.ForwardController;
@@ -14,7 +14,7 @@ import java.util.Map;
 public class RequestHandlerMapping {
     private Map<HandlerKey, Controller> mappings = new HashMap<>();
 
-    void init() {
+    public void init() {
         mappings.put(of(GET, "/"), new ForwardController("home"));
         mappings.put(of(GET, "/user/form"), new ForwardController("/user/form"));
         mappings.put(of(POST, "/users"), new UserCreateController());

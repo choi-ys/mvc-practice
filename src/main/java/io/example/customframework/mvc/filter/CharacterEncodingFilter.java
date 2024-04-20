@@ -1,4 +1,4 @@
-package io.example.customframework.mvc;
+package io.example.customframework.mvc.filter;
 
 import java.io.IOException;
 import javax.servlet.Filter;

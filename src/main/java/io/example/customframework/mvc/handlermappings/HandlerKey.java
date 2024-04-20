@@ -1,4 +1,4 @@
-package io.example.customframework.mvc;
+package io.example.customframework.mvc.handlermappings;
 
 import io.example.annotation.RequestMethod;
 import java.util.Objects;
