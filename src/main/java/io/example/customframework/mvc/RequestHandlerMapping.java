@@ -15,8 +15,8 @@ public class RequestHandlerMapping {
     private Map<HandlerKey, Controller> mappings = new HashMap<>();
 
     void init() {
-        mappings.put(of(GET, "/"), new ForwardController("home.jsp"));
-        mappings.put(of(GET, "/user/form"), new ForwardController("/user/form.jsp"));
+        mappings.put(of(GET, "/"), new ForwardController("home"));
+        mappings.put(of(GET, "/user/form"), new ForwardController("/user/form"));
         mappings.put(of(POST, "/users"), new UserCreateController());
         mappings.put(of(GET, "/users"), new UsersController());
     }

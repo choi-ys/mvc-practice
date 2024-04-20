@@ -5,7 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class UsersController implements Controller {
-    private static final String USER_LIST_VIEW_NAME = "/user/list.jsp";
+    private static final String USER_LIST_VIEW_NAME = "/user/list";
 
     @Override
     public String handleRequest(HttpServletRequest request, HttpServletResponse response) {

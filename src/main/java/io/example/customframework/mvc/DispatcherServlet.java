@@ -2,7 +2,11 @@ package io.example.customframework.mvc;
 
 import io.example.annotation.RequestMethod;
 import io.example.customframework.business.controller.Controller;
+import io.example.customframework.mvc.viewresolver.JspViewResolver;
+import io.example.customframework.mvc.viewresolver.ViewResolver;
+import io.example.customframework.mvc.viewresolver.view.View;
 import java.io.IOException;
+import java.util.HashMap;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -17,11 +21,14 @@ public class DispatcherServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(DispatcherServlet.class);
     public static final String REDIRECT_PREFIX = "redirect:";
     private RequestHandlerMapping requestHandlerMapping;
+    private ViewResolver viewResolver;
 
     @Override
     public void init() {
         requestHandlerMapping = new RequestHandlerMapping();
         requestHandlerMapping.init();
+
+        viewResolver = new JspViewResolver();
     }
 
     @Override
@@ -33,12 +40,8 @@ public class DispatcherServlet extends HttpServlet {
             String viewName = handler.handleRequest(request, response);
             log.info("[DispatcherServlet][service] Request url: {}, forward view name: {}", request.getRequestURI(), viewName);
 
-            if(viewName.contains("redirect:")){
-                response.sendRedirect(viewName.substring(REDIRECT_PREFIX.length()));
-            }
-
-            RequestDispatcher requestDispatcher = request.getRequestDispatcher(viewName);
-            requestDispatcher.forward(request, response);
+            View view = viewResolver.resolverView(viewName);
+            view.render(new HashMap<>(), request, response);
         } catch (Exception e) {
             log.error("[DispatcherServlet][service] Request url: {}", request.getRequestURI());
         }

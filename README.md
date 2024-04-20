@@ -174,3 +174,17 @@ dependencies {
   - 기존 DispatcherServlet의 service()에서 forwarding만 처리하고 있었으므로, redirect에 대한 화면 처리 분기 추가
 
 - [x] 회원 목록 결과 출력 시 한글 처리를 위한 filter 구현
+
+- View 처리를 위한 ViewResolver 구현
+  - [x] ViewResolver(Interface)
+    - Handler의 처리 결과로 넘겨 받은 view name과 응답 데이터를 이용한 rendering(redirect or forwarding) 처리
+    - 기존 DispatcherServlet에서 담당하는 view 처리 및 응답 데이터 설정부를 ViewResolver로 이관
+    - [x] JspViewResolver : Handler 처리 결과로 부터 적절한 View를 선별하고, 해당 View에 맞는 rendering을 수행
+
+  - [x] View(Interface)
+    - ViewResolver로 부터 선별된 View 타입으로, rendering 방법에 따라 JspView와 RedirectView로 구분 
+    - [x] JspView : Controller 처리 결과를 model 객체에 설정한 후, Request 객체를 통해 대상 view로 forwarding
+      - [x] 기존 DispatcherServlet에서 View-name을 받아 forwarding 하던 부분을 JspView 객체로 이관
+      - [x] 기존 RequestHandlerMapping과 각 Controller에서 rendering할 view name에서 확장자 '.jsp'로 명시하던 부분을 JspView 객체로 이전
+    - [x] RedirectView : response 객체를 통해 대상 view로 Redirect
+      - [x] HttpServletResponse.sendRedirect()를 이용하여 redirect할 view를 설정
