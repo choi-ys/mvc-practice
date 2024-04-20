@@ -10,6 +10,7 @@ public class RequestHandlerMapping {
 
     void init() {
         mappings.put("/", new ForwardController("home.jsp"));
+        mappings.put("/user/form", new ForwardController("/user/form.jsp"));
     }
 
     public Controller findHandler(String urlPath) {
