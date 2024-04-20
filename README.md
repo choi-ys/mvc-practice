@@ -188,3 +188,6 @@ dependencies {
       - [x] 기존 RequestHandlerMapping과 각 Controller에서 rendering할 view name에서 확장자 '.jsp'로 명시하던 부분을 JspView 객체로 이전
     - [x] RedirectView : response 객체를 통해 대상 view로 Redirect
       - [x] HttpServletResponse.sendRedirect()를 이용하여 redirect할 view를 설정
+
+- [ ] 선별된 Handler 호출 및 호출 결과 반환된 응답 데이터 가공을 위한 HandlerAdapter 구현
+  - [ ] ControllerTypeHandlerAdapter : Controller interface를 구현한 Controller 중 선별된 Controller를 호출하고, 그 결과를 ModelAndView 객체에 담아 반환
