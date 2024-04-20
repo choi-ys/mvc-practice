@@ -133,7 +133,7 @@ dependencies {
   - 기존 RequestHandlerMapping에 등록된 "/" 요청 시 home.jsp를 반환하는 HomeController 제거
   - home.jsp를 단순 forwarding하던 HomeController는 단순 forwarding을 위한 ForwardController로 대체 가능하므로 삭제
 
-- [ ] 회원 등록 화면 출력 API 구현
+- [x] 회원 등록 화면 출력 API 구현
   - ex. localhost:8080/user/form -> user/form.jsp 반환
   - 출력할 회원 가입 화면인 form.jsp 작성 
   - RequestHandlerMapping에 "/user/form/" 요청 시 user/form.jsp를 반환 할 수 있도록 forwardController("/user/form.jsp") 등록
