@@ -192,3 +192,8 @@ public class DispatcherServlet extends HttpServlet {
 }
 ```
 ---
+- [x] 단순 화면 forwarding을 위한 ForwardController 구현
+  - [x] 요청 URL Path에 해당하는 화면으로 forwarding 하기 위해 별도 처리 없이 view name만 반환 하는 범용 컨트롤러
+  - [x] Controller : ForwardController
+  - [x] 기존 RequestHandlerMapping에 등록된 "/" 요청 시 home.jsp를 반환하는 HomeController 제거
+  - [x] home.jsp를 단순 forwarding하던 HomeController는 단순 forwarding을 위한 ForwardController로 대체 가능하므로 삭제
