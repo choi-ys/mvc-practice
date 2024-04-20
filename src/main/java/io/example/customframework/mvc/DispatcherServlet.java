@@ -1,16 +1,19 @@
 package io.example.customframework.mvc;
 
 import io.example.annotation.RequestMethod;
-import io.example.customframework.business.controller.Controller;
+import io.example.customframework.mvc.handleradapters.AnnotationHandlerAdapter;
 import io.example.customframework.mvc.handleradapters.ControllerTypeHandlerAdapter;
 import io.example.customframework.mvc.handleradapters.HandlerAdapter;
 import io.example.customframework.mvc.handleradapters.ModelAndView;
+import io.example.customframework.mvc.handlermappings.AnnotationHandlerMapping;
 import io.example.customframework.mvc.handlermappings.HandlerKey;
+import io.example.customframework.mvc.handlermappings.HandlerMapping;
 import io.example.customframework.mvc.handlermappings.RequestHandlerMapping;
 import io.example.customframework.mvc.viewresolver.JspViewResolver;
 import io.example.customframework.mvc.viewresolver.ViewResolver;
 import io.example.customframework.mvc.viewresolver.view.View;
 import java.io.IOException;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -23,24 +26,46 @@ import org.slf4j.LoggerFactory;
 public class DispatcherServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(DispatcherServlet.class);
     public static final String REDIRECT_PREFIX = "redirect:";
-    private RequestHandlerMapping requestHandlerMapping;
-    private HandlerAdapter handlerAdapter;
+    private List<HandlerMapping> handlerMappings;
+    private List<HandlerAdapter> handlerAdapters;
     private ViewResolver viewResolver;
 
     @Override
     public void init() {
-        requestHandlerMapping = new RequestHandlerMapping();
-        requestHandlerMapping.init();
+        initHandlerMappings();
+        initHandlerAdapters();
 
-        handlerAdapter = new ControllerTypeHandlerAdapter();
         viewResolver = new JspViewResolver();
+    }
+
+    private void initHandlerMappings() {
+        RequestHandlerMapping requestHandlerMapping = new RequestHandlerMapping();
+        requestHandlerMapping.init();
+        AnnotationHandlerMapping annotationHandlerMapping = new AnnotationHandlerMapping();
+        annotationHandlerMapping.initialize();
+
+        handlerMappings = List.of(requestHandlerMapping, annotationHandlerMapping);
+    }
+
+    private void initHandlerAdapters() {
+        handlerAdapters = List.of(new ControllerTypeHandlerAdapter(), new AnnotationHandlerAdapter());
     }
 
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             HandlerKey handlerKey = HandlerKey.of(RequestMethod.valueOf(request.getMethod()), request.getRequestURI());
-            Controller handler = requestHandlerMapping.findHandler(handlerKey);
+
+            Object handler = handlerMappings.stream()
+                .filter(handlerMapping -> handlerMapping.findHandler(handlerKey) != null)
+                .map(handlerMapping -> handlerMapping.findHandler(handlerKey))
+                .findFirst()
+                .orElseThrow(() -> new ServletException("no handler for [" + handlerKey + "]"));
+
+            HandlerAdapter handlerAdapter = handlerAdapters.stream()
+                .filter(adapter -> adapter.supports(handler))
+                .findFirst()
+                .orElseThrow(() -> new ServletException("no adpater for handler [" + handler + "]"));
             ModelAndView modelAndView = handlerAdapter.handle(request, response, handler);
 
             View view = viewResolver.resolverView(modelAndView.getViewName());

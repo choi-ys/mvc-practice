@@ -189,5 +189,12 @@ dependencies {
     - [x] RedirectView : response 객체를 통해 대상 view로 Redirect
       - [x] HttpServletResponse.sendRedirect()를 이용하여 redirect할 view를 설정
 
-- [ ] 선별된 Handler 호출 및 호출 결과 반환된 응답 데이터 가공을 위한 HandlerAdapter 구현
-  - [ ] ControllerTypeHandlerAdapter : Controller interface를 구현한 Controller 중 선별된 Controller를 호출하고, 그 결과를 ModelAndView 객체에 담아 반환
+- [x] 선별된 Handler 호출 및 호출 결과 반환된 응답 데이터 가공을 위한 HandlerAdapter 구현
+  - [x] ControllerTypeHandlerAdapter : Controller interface를 구현한 Controller 중 선별된 Controller를 호출하고, 그 결과를 ModelAndView 객체에 담아 반환
+
+- [x] Custom Annotation이 명시된 Controller 처리 추가
+  - [x] Custom Annotation @Controller가 명시된 Handler 선별을 위한 AnnotationHandler, AnnotationHandlerMapping 구현
+    - Reflection API를 활용하여 @Controller가 명시된 Handler를 선별하고, @RequestMapping이 명시된 메소드를 찾아 HandlerKey와 AnnotationHandler를 생성
+  - [x] Controller가 명시된 Handler와 Controller interface를 구현한 Controller Type Handler를 선별할 수 있도록 HandlerMapping interface를 정의
+  - [x] User관련 Controller를 기존 Controller interface 구현 타입에서 @Controller 명시 타입으로 변경
+    - [x] RequestHandlerMapping에 등록된 UsersController, UserCreateController 제거

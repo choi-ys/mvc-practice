@@ -28,7 +28,7 @@ class RequestHandlerMappingTest {
         HandlerKey handlerKey = HandlerKey.of(RequestMethod.GET, "/");
 
         // When
-        Controller handler = requestHandlerMapping.findHandler(handlerKey);
+        Object handler = requestHandlerMapping.findHandler(handlerKey);
 
         // Then
         assertThat(handler.getClass()).isEqualTo(ForwardController.class);
