@@ -148,3 +148,27 @@ dependencies {
     - 수신한 파라미터를 이용하여 User객체 생성 및 UserRepo에 저장
     - 리다이렉트할 요청 반환 : return redirect:/users
   - RequestHandlerMapping에 /users 요청에 대한 Mapping Handler로 UserCreateController 등록
+
+- [x] 회원 목록 API 구현
+  - 요청 : GET localhost:8080/users
+  - view : user/list.jsp
+  - Controller: UserCreateController
+    - handle :
+      - 반환할 회원 목록 정보 설정 : request.setAttribute(UserRepo.list())
+      - 포워딩할 화면 파일명 반환 : return forward viewname user/list.jsp
+  - UserRepo : 회원 목록 조회 부 구현
+  - 화면에 User의 각 필드 출력을 위한 getter() 추가
+
+- [x] RequestHandlerMapping 리팩토링
+  - 문제 : 요청 URL Path 정보를 key값으로 하여 해당하는 Controller를 선별하는 경우, 요청 URL Path는 동일하지만 HttpMethod가 다른 요청의 경우 추가적인 Controller 등록 및 선별이 불가능
+  - 수정 : 요청 URL Path와 요청 HttpMethod를 가지는 HandlerKey 객체를 key값으로 하여 해당하는 Controller를 선별함으로써, 동일한 URL Path를 가지지만 HttpMethod가 다른 요청인 경우 적절한 Controller 등록 및
+    선별 가능
+    - AS-IS : Map<String, Controller> mappings
+      - key : 요청 URL Path
+      - value : 해당 하는 Controller
+    - TO-BE : Map<HandlerKey, Controller> mappings
+      - key : 요청 URL Path와 요청 HttpMethod로 이루어진 HandlerKey
+      - value : 해당 하는 Controller
+
+- [x] 회원 등록 이후 redirect 요청 처리 분기 추가
+  - 기존 DispatcherServlet의 service()에서 forwarding만 처리하고 있었으므로, redirect에 대한 화면 처리 분기 추가

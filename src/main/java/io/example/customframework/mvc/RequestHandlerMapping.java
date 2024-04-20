@@ -1,21 +1,27 @@
 package io.example.customframework.mvc;
 
+import static io.example.annotation.RequestMethod.GET;
+import static io.example.annotation.RequestMethod.POST;
+import static io.example.customframework.mvc.HandlerKey.of;
+
 import io.example.customframework.business.controller.Controller;
 import io.example.customframework.business.controller.ForwardController;
 import io.example.customframework.business.controller.UserCreateController;
+import io.example.customframework.business.controller.UsersController;
 import java.util.HashMap;
 import java.util.Map;
 
 public class RequestHandlerMapping {
-    private Map<String, Controller> mappings = new HashMap<>();
+    private Map<HandlerKey, Controller> mappings = new HashMap<>();
 
     void init() {
-        mappings.put("/", new ForwardController("home.jsp"));
-        mappings.put("/user/form", new ForwardController("/user/form.jsp"));
-        mappings.put("/users", new UserCreateController());
+        mappings.put(of(GET, "/"), new ForwardController("home.jsp"));
+        mappings.put(of(GET, "/user/form"), new ForwardController("/user/form.jsp"));
+        mappings.put(of(POST, "/users"), new UserCreateController());
+        mappings.put(of(GET, "/users"), new UsersController());
     }
 
-    public Controller findHandler(String urlPath) {
-        return mappings.get(urlPath);
+    public Controller findHandler(HandlerKey handlerKey) {
+        return mappings.get(handlerKey);
     }
 }

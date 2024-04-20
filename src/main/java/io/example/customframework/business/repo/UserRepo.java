@@ -1,6 +1,7 @@
 package io.example.customframework.business.repo;
 
 import io.example.customframework.business.domain.User;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,5 +14,9 @@ public class UserRepo {
 
     public static User findById(String userId) {
         return userMap.get(userId);
+    }
+
+    public static Collection<User> findAll() {
+        return userMap.values();
     }
 }

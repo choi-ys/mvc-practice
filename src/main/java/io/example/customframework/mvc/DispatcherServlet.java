@@ -1,5 +1,6 @@
 package io.example.customframework.mvc;
 
+import io.example.annotation.RequestMethod;
 import io.example.customframework.business.controller.Controller;
 import java.io.IOException;
 import javax.servlet.RequestDispatcher;
@@ -14,6 +15,7 @@ import org.slf4j.LoggerFactory;
 @WebServlet("/")
 public class DispatcherServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(DispatcherServlet.class);
+    public static final String REDIRECT_PREFIX = "redirect:";
     private RequestHandlerMapping requestHandlerMapping;
 
     @Override
@@ -24,10 +26,16 @@ public class DispatcherServlet extends HttpServlet {
 
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Controller handler = requestHandlerMapping.findHandler(request.getRequestURI());
+        HandlerKey handlerKey = HandlerKey.of(RequestMethod.valueOf(request.getMethod()), request.getRequestURI());
+        Controller handler = requestHandlerMapping.findHandler(handlerKey);
+
         try {
             String viewName = handler.handleRequest(request, response);
             log.info("[DispatcherServlet][service] Request url: {}, forward view name: {}", request.getRequestURI(), viewName);
+
+            if(viewName.contains("redirect:")){
+                response.sendRedirect(viewName.substring(REDIRECT_PREFIX.length()));
+            }
 
             RequestDispatcher requestDispatcher = request.getRequestDispatcher(viewName);
             requestDispatcher.forward(request, response);
