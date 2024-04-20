@@ -172,3 +172,5 @@ dependencies {
 
 - [x] 회원 등록 이후 redirect 요청 처리 분기 추가
   - 기존 DispatcherServlet의 service()에서 forwarding만 처리하고 있었으므로, redirect에 대한 화면 처리 분기 추가
+
+- [x] 회원 목록 결과 출력 시 한글 처리를 위한 filter 구현
