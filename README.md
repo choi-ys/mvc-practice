@@ -137,3 +137,14 @@ dependencies {
   - ex. localhost:8080/user/form -> user/form.jsp 반환
   - 출력할 회원 가입 화면인 form.jsp 작성 
   - RequestHandlerMapping에 "/user/form/" 요청 시 user/form.jsp를 반환 할 수 있도록 forwardController("/user/form.jsp") 등록
+
+- [x] 회원 등록 API 구현
+  - 요청 : POST localhost:8080/users
+  - User 객체 정의 : ID, 이름 속성
+  - UserRepo 구현 : Map<String, User> userMap에 userId를 key로, User를 value로 하는 in-memory repo 구현
+  - Controller: UserCreateController
+  - handle :
+    - request.getParameter()를 이용해 요청 파라미터 수신
+    - 수신한 파라미터를 이용하여 User객체 생성 및 UserRepo에 저장
+    - 리다이렉트할 요청 반환 : return redirect:/users
+  - RequestHandlerMapping에 /users 요청에 대한 Mapping Handler로 UserCreateController 등록
